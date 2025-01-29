@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contador de Chopps</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        .beer-container {
+            position: relative;
+            width: 150px;
+            height: 300px;
+        }
+        /* Div responsável por mostrar a textura da cerveja */
+        #beerFill {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 0%;
+            /* Troque a URL caso use outro arquivo/ outro link */
+            background-image: url('https://static5.depositphotos.com/1050516/496/i/450/depositphotos_4964269-stock-photo-dewy-beer-glass-texture.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            transition: height 0.3s ease;
+            z-index: 1;
+        }
+        .container-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .counter {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 80px;
+            height: 80px;
+            border: 3px solid #ffcc00;
+            border-radius: 50%;
+            background-color: #fff;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        .buttons {
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            background-color: #ffcc00;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #e6b800;
+        }
+        .price-input {
+            margin-top: 10px;
+        }
+        #totalLine {
+            margin-top: 10px;
+            font-size: 18px;
+            color: #333;
+        }
+        /* Aviso de limite */
+        #warning {
+            display: none;
+            margin-top: 10px;
+            color: red;
+            font-weight: bold;
+            font-size: 16px;
+            text-align: center;
+            max-width: 80%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Contador de Chopps</h1>
+
+    <div class="main-container">
+        <div class="container-info">
+            <div class="beer-container">
+                <div id="beerFill"></div>
+            </div>
+            <div class="counter" id="beerCounter">0</div>
+        </div>
+
+        <!-- Campo para inserir o valor de cada chopp -->
+        <div class="price-input">
+            <label for="choppPrice">Valor de cada chopp (R$): </label>
+            <input 
+                type="number" 
+                id="choppPrice" 
+                placeholder="Ex: 5.00" 
+                step="0.01" 
+                oninput="updateTotalPrice()"
+                style="width: 100px;"
+            />
+        </div>
+
+        <div class="buttons">
+            <button onclick="addBeer()">Adicionar Chopp</button>
+            <button onclick="resetBeer()">Zerar Copo</button>
+        </div>
+        
+        <p id="totalLine">Valor total dos chopps: R$ <span id="totalValue">0.00</span></p>
+        <div id="warning"></div>
+    </div>
+
+    <script>
+        let count = 0;
+        const maxBeers = 30;
+
+        function addBeer() {
+            if (count < maxBeers) {
+                count++;
+                updateBeerFill();
+                updateCounter();
+                updateTotalPrice();
+            } else {
+                // Exibe o aviso quando atinge o limite
+                showWarning();
+            }
+        }
+
+        function updateBeerFill() {
+            const fillDiv = document.getElementById('beerFill');
+            const percentage = Math.floor((count / maxBeers) * 100);
+            fillDiv.style.height = percentage + '%';
+        }
+
+        function updateCounter() {
+            const counter = document.getElementById('beerCounter');
+            counter.textContent = count;
+        }
+
+        function updateTotalPrice() {
+            const priceInput = document.getElementById('choppPrice').value;
+            const price = parseFloat(priceInput) || 0;
+            const total = price * count;
+            document.getElementById('totalValue').textContent = total.toFixed(2);
+        }
+
+        function resetBeer() {
+            count = 0;
+            updateBeerFill();
+            updateCounter();
+            updateTotalPrice();
+            hideWarning();
+        }
+
+        // Funções para mostrar/ocultar aviso
+        function showWarning() {
+            const warningDiv = document.getElementById('warning');
+            warningDiv.textContent = 'Opa, você já bebeu demais, é melhor parar agora.';
+            warningDiv.style.display = 'block';
+        }
+
+        function hideWarning() {
+            const warningDiv = document.getElementById('warning');
+            warningDiv.style.display = 'none';
+            warningDiv.textContent = '';
+        }
+    </script>
+</body>
+</html>
